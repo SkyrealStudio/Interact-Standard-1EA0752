@@ -1,5 +1,0 @@
-------Shake
-------Clear
-------Next Page
-------Start Content
-------Stop Content
