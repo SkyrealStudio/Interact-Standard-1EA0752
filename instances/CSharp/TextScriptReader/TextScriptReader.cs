@@ -29,11 +29,20 @@ namespace Skyreal.Universal.Static
         /// <param name="Type">The type of this element.</param>
         /// <param name="Content">The content of this element.</param>
         public readonly record struct TextScriptElement(TextScriptElementType Type, string Content);
-        public static Queue<TextScriptElement> GetElements(string _FileName)
+        /// <summary>
+        /// A method structure.
+        /// </summary>
+        /// <param name="MethodName">The name of the method.</param>
+        /// <param name="Parameters">The parameters.</param>
+        public record struct TextScriptMethod(string MethodName, List<string> Parameters);
+        /// <summary>
+        /// Get all the elements in a text script file.
+        /// </summary>
+        /// <param name="_FileStream">The stream of the file, will be disposed.</param>
+        /// <returns>All the elements in a queue structure.</returns>
+        public static Queue<TextScriptElement> GetElements(FileStream _FileStream)
         {
-            //throw new NotImplementedException();
-            FileStream fs = File.OpenRead(_FileName);
-            StreamReader sr = new(fs);
+            StreamReader sr = new(_FileStream);
             Queue<TextScriptElement> ret = new(0);
             TextScriptElementType type = TextScriptElementType.Method;
             bool multiline = false;
@@ -45,14 +54,14 @@ namespace Skyreal.Universal.Static
                 {
                     switch (type)
                     {
-                    case TextScriptElementType.Method:
-                        if (line.Length >= 6 && line[..6] == "------")
-                            multiline = false;
-                        break;
-                    case TextScriptElementType.Parameter:
-                        if (line.Length >= 6 && line[..6] == "======")
-                            multiline = false;
-                        break;
+                        case TextScriptElementType.Method:
+                            if (line.Length >= 6 && line[..6] == "------")
+                                multiline = false;
+                            break;
+                        case TextScriptElementType.Parameter:
+                            if (line.Length >= 6 && line[..6] == "======")
+                                multiline = false;
+                            break;
                     }
                     if (multiline)
                     {
@@ -76,7 +85,7 @@ namespace Skyreal.Universal.Static
                     multiline = true;
                     continue;
                 }
-                else if (line.Length >= 2 && line[..2] == "--" )
+                else if (line.Length >= 2 && line[..2] == "--")
                 {
                     type = TextScriptElementType.Method;
                     content = line[2..];
@@ -100,13 +109,55 @@ namespace Skyreal.Universal.Static
                 {
                     continue;
                 }
-                ret.Enqueue(new TextScriptElement(type, content));
+                ret.Enqueue(new(type, content));
             }
             sr.Close();
-            fs.Close();
+            _FileStream.Close();
             sr.Dispose();
-            fs.Dispose();
+            _FileStream.Dispose();
             return ret;
+        }
+        /// <summary>
+        /// Get all the elements in a text script file.
+        /// </summary>
+        /// <param name="_FileName">The name of the file.</param>
+        /// <returns>All the elements in a queue structure.</returns>
+        public static Queue<TextScriptElement> GetElements(string _FileName)
+        {
+            return GetElements(File.OpenRead(_FileName));
+        }
+        /// <summary>
+        /// Get all the elements organized as methods in a text script file.
+        /// </summary>
+        /// <param name="_FileStream">The stream of the file, will be disposed.</param>
+        /// <returns>All the methods in a queue structure.</returns>
+        public static Queue<TextScriptMethod> GetMethods(FileStream _FileStream)
+        {
+            Queue<TextScriptMethod> ret = new(0);
+            Queue<TextScriptElement> datas = GetElements(_FileStream);
+            while (datas.Count > 0)
+            {
+                TextScriptElement tse = datas.Dequeue();
+                switch (tse.Type)
+                {
+                case TextScriptElementType.Method:
+                    ret.Enqueue(new(tse.Content, new(0)));
+                    break;
+                case TextScriptElementType.Parameter:
+                    ret.Peek().Parameters.Add(tse.Content);
+                    break;
+                }
+            }
+            return ret;
+        }
+        /// <summary>
+        /// Get all the elements organized as methods in a text script file.
+        /// </summary>
+        /// <param name="_FileName">The name of the file.</param>
+        /// <returns>All the methods in a queue structure.</returns>
+        public static Queue<TextScriptMethod> GetMethods(string _FileName)
+        {
+            return GetMethods(File.OpenRead(_FileName));
         }
     }
 }
