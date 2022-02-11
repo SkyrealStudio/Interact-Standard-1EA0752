@@ -144,7 +144,11 @@ namespace Skyreal.Universal.Static
                     ret.Enqueue(new(tse.Content, new(0)));
                     break;
                 case TextScriptElementType.Parameter:
-                    ret.Peek().Parameters.Add(tse.Content);
+                    try
+                    {
+                        ret.Last().Parameters.Add(tse.Content);
+                    }
+                    catch (InvalidOperationException) { }
                     break;
                 }
             }
