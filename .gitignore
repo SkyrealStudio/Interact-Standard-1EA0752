@@ -5,12 +5,5 @@
 bin/
 obj/
 
-# Visual Studio Sln.
-*.sln
-
 # Visual Studio Code Cache Directory.
 .vscode/
-
-# Tests
-[Tt]est/
-[Tt]ests/
