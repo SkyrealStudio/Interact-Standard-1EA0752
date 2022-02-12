@@ -1,0 +1,16 @@
+# Visual Studio Cache Directory.
+.vs/
+
+# Visual Studio Bin & Obj
+bin/
+obj/
+
+# Visual Studio Sln.
+*.sln
+
+# Visual Studio Code Cache Directory.
+.vscode/
+
+# Tests
+[Tt]est/
+[Tt]ests/
