@@ -46,7 +46,7 @@ namespace Skyreal.Universal.Static
             Queue<TextScriptElement> ret = new(0);
             TextScriptElementType type = TextScriptElementType.Method;
             bool multiline = false;
-            string content = "";
+            string content = "------";
             while (!sr.EndOfStream)
             {
                 string line = sr.ReadLine() ?? "";
@@ -65,22 +65,24 @@ namespace Skyreal.Universal.Static
                     }
                     if (multiline)
                     {
-                        if (content != "")
+                        if (content != "------")
                             content += '\n';
+                        else
+                            content = "";
                         content += line;
                         continue;
                     }
                 }
                 else if (line.Length >= 6 && line[..6] == "------")
                 {
-                    content = "";
+                    content = "------";
                     type = TextScriptElementType.Method;
                     multiline = true;
                     continue;
                 }
                 else if (line.Length >= 6 && line[..6] == "======")
                 {
-                    content = "";
+                    content = "------";
                     type = TextScriptElementType.Parameter;
                     multiline = true;
                     continue;
