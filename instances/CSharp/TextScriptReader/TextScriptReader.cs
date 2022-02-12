@@ -28,7 +28,7 @@ namespace Skyreal.Universal.Static
         /// </summary>
         /// <param name="Type">The type of this element.</param>
         /// <param name="Content">The content of this element.</param>
-        public readonly record struct TextScriptElement(TextScriptElementType Type, string Content);
+        private readonly record struct TextScriptElement(TextScriptElementType Type, string Content);
         /// <summary>
         /// A method structure.
         /// </summary>
@@ -40,7 +40,7 @@ namespace Skyreal.Universal.Static
         /// </summary>
         /// <param name="_FileStream">The stream of the file, will be disposed.</param>
         /// <returns>All the elements in a queue structure.</returns>
-        public static Queue<TextScriptElement> GetElements(FileStream _FileStream)
+        private static Queue<TextScriptElement> GetElements(FileStream _FileStream)
         {
             StreamReader sr = new(_FileStream);
             Queue<TextScriptElement> ret = new(0);
@@ -124,7 +124,7 @@ namespace Skyreal.Universal.Static
         /// </summary>
         /// <param name="_FileName">The name of the file.</param>
         /// <returns>All the elements in a queue structure.</returns>
-        public static Queue<TextScriptElement> GetElements(string _FileName)
+        private static Queue<TextScriptElement> GetElements(string _FileName)
         {
             return GetElements(File.OpenRead(_FileName));
         }
